@@ -79,7 +79,9 @@ export function ChatWorkspace({
       );
 
       if (!responseText.trim()) {
-        throw new Error(`${providerLabel} did not return any text for this prompt.`);
+        throw new Error(
+          `${providerLabel} did not return any text for this prompt.`,
+        );
       }
 
       const nextEntry: ChatEntry = {
@@ -133,7 +135,6 @@ export function ChatWorkspace({
 
   const sessionList = sessions;
   const activeMessages = activeChat?.messages ?? [];
-  const activeChatTitle = activeChat?.title ?? "New chat";
   const canClearChats = sessionList.length > 0 || Boolean(liveResponse);
 
   return (
@@ -158,8 +159,11 @@ export function ChatWorkspace({
           sessions={sessionList}
           activeChatId={activeChatId}
           isOpen={sidebarOpen}
+          canClearChats={canClearChats}
+          isLoading={isLoading}
           onSelectChat={handleSelectChat}
           onCreateChat={handleCreateChat}
+          onClearAll={handleClearHistory}
           onDeleteChat={deleteChat}
         />
 
@@ -167,26 +171,8 @@ export function ChatWorkspace({
           <div className="mx-auto flex h-full w-full max-w-5xl min-h-0 flex-col p-4 md:p-6">
             <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden rounded-3xl border border-white/8 bg-[#212121] p-3 md:p-4">
               <div className="flex items-center justify-between gap-4 border-b border-white/8 pb-3">
-                <div>
-                  <p className="text-xs font-semibold tracking-[0.2em] text-stone-500 uppercase">
-                    Active chat
-                  </p>
-                  <h1 className="mt-1 text-xl font-semibold text-white">
-                    {activeChatTitle}
-                  </h1>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs font-semibold tracking-[0.2em] text-emerald-300 uppercase">
-                    {isLoading ? "Thinking" : "Ready"}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleClearHistory}
-                    disabled={!canClearChats || isLoading}
-                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-stone-200 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    Clear all
-                  </button>
+                <div className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs font-semibold tracking-[0.2em] text-emerald-300 uppercase">
+                  {isLoading ? "Thinking" : "Ready"}
                 </div>
               </div>
 

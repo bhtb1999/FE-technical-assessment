@@ -22,8 +22,3 @@ export type LiveResponse = {
   prompt: string;
   response: string;
 };
-
-export type ChatCompletionMessage = {
-  role: "user" | "assistant";
-  content: string;
-};

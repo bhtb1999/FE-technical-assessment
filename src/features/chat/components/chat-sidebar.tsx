@@ -6,8 +6,11 @@ type ChatSidebarProps = {
   sessions: ChatSession[];
   activeChatId: string | null;
   isOpen: boolean;
+  canClearChats: boolean;
+  isLoading: boolean;
   onSelectChat: (chatId: string) => void;
   onCreateChat: () => void;
+  onClearAll: () => void;
   onDeleteChat: (chatId: string) => void;
   onClose?: () => void;
 };
@@ -16,8 +19,11 @@ export function ChatSidebar({
   sessions,
   activeChatId,
   isOpen,
+  canClearChats,
+  isLoading,
   onSelectChat,
   onCreateChat,
+  onClearAll,
   onDeleteChat,
 }: ChatSidebarProps) {
   return (
@@ -26,14 +32,21 @@ export function ChatSidebar({
         isOpen ? "w-66" : "w-0 border-r-0"
       }`}
     >
-      <div className="px-3 pt-3">
+      <div className="grid grid-cols-2 gap-2 px-3 pt-3">
         <button
           type="button"
           onClick={onCreateChat}
-          className="inline-flex w-full items-center justify-between rounded-xl border border-white/10 px-3 py-3 text-sm font-medium text-stone-200 transition hover:bg-white/6"
+          className="inline-flex items-center justify-center rounded-xl border border-white/10 px-3 py-3 text-sm font-medium text-stone-200 transition hover:bg-white/6"
         >
           <span>New chat</span>
-          <span className="text-base leading-none">✎</span>
+        </button>
+        <button
+          type="button"
+          onClick={onClearAll}
+          disabled={!canClearChats || isLoading}
+          className="inline-flex items-center justify-center rounded-xl border border-white/10 px-3 py-3 text-sm font-medium text-stone-200 transition hover:bg-white/6 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <span>Clear all</span>
         </button>
       </div>
 

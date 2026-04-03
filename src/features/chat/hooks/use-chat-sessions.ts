@@ -18,7 +18,7 @@ function sortSessions(sessions: ChatSession[]) {
 
 function buildChatTitle(prompt: string) {
   const normalized = prompt.trim().replace(/\s+/g, " ");
-  return normalized.length > 36 ? `${normalized.slice(0, 36)}...` : normalized;
+  return normalized.length > 56 ? `${normalized.slice(0, 56)}...` : normalized;
 }
 
 export function useChatSessions(storageKey: string) {
