@@ -1,5 +1,10 @@
 import { GenerateResponse, ChatEntry } from "@/types/chat";
 
+type StreamPromptResponseOptions = {
+  apiPath?: string;
+  providerLabel?: string;
+};
+
 function isJsonResponse(contentType: string | null) {
   return contentType?.includes("application/json");
 }
@@ -8,8 +13,12 @@ export async function streamPromptResponse(
   prompt: string,
   history: ChatEntry[],
   onChunk: (chunk: string) => void,
+  options?: StreamPromptResponseOptions,
 ) {
-  const response = await fetch("/api/generate", {
+  const apiPath = options?.apiPath ?? "/api/generate";
+  const providerLabel = options?.providerLabel ?? "the AI provider";
+
+  const response = await fetch(apiPath, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -20,10 +29,12 @@ export async function streamPromptResponse(
   if (!response.ok) {
     if (isJsonResponse(response.headers.get("content-type"))) {
       const data = (await response.json()) as GenerateResponse;
-      throw new Error(data.error || "Something went wrong while contacting Gemini.");
+      throw new Error(
+        data.error || `Something went wrong while contacting ${providerLabel}.`,
+      );
     }
 
-    throw new Error("Something went wrong while contacting Gemini.");
+    throw new Error(`Something went wrong while contacting ${providerLabel}.`);
   }
 
   if (!response.body) {

@@ -6,14 +6,28 @@ import { ChatSidebar } from "@/features/chat/components/chat-sidebar";
 import { LatestResponsePanel } from "@/features/chat/components/latest-response-panel";
 import { PromptForm } from "@/features/chat/components/prompt-form";
 import {
-  CHAT_HISTORY_STORAGE_KEY,
+  DEFAULT_CHAT_HISTORY_STORAGE_KEY,
   EXAMPLE_PROMPTS,
 } from "@/features/chat/constants";
 import { useChatSessions } from "@/features/chat/hooks/use-chat-sessions";
 import { streamPromptResponse } from "@/features/chat/lib/chat-api";
 import { ChatEntry, LiveResponse } from "@/types/chat";
 
-export function ChatWorkspace() {
+type ChatWorkspaceProps = {
+  apiPath?: string;
+  providerLabel?: string;
+  storageKey?: string;
+  promptPlaceholder?: string;
+  examplePrompts?: string[];
+};
+
+export function ChatWorkspace({
+  apiPath = "/api/generate",
+  providerLabel = "Hugging Face",
+  storageKey = DEFAULT_CHAT_HISTORY_STORAGE_KEY,
+  promptPlaceholder = "Ask Hugging Face to summarize, brainstorm, rewrite, or explain something.",
+  examplePrompts = EXAMPLE_PROMPTS,
+}: ChatWorkspaceProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +43,7 @@ export function ChatWorkspace() {
     deleteChat,
     removeEmptyChatIfNeeded,
     clearAllChats,
-  } = useChatSessions(CHAT_HISTORY_STORAGE_KEY);
+  } = useChatSessions(storageKey);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -61,10 +75,11 @@ export function ChatWorkspace() {
             response: responseText,
           });
         },
+        { apiPath, providerLabel },
       );
 
       if (!responseText.trim()) {
-        throw new Error("Gemini did not return any text for this prompt.");
+        throw new Error(`${providerLabel} did not return any text for this prompt.`);
       }
 
       const nextEntry: ChatEntry = {
@@ -181,7 +196,7 @@ export function ChatWorkspace() {
                   history={activeMessages}
                   liveResponse={liveResponse}
                   isLoading={isLoading}
-                  examplePrompts={EXAMPLE_PROMPTS}
+                  examplePrompts={examplePrompts}
                   onExampleSelect={setPrompt}
                 />
               </div>
@@ -192,6 +207,7 @@ export function ChatWorkspace() {
                   error={error}
                   isLoading={isLoading}
                   canClearHistory={canClearChats}
+                  placeholder={promptPlaceholder}
                   onPromptChange={setPrompt}
                   onSubmit={handleSubmit}
                   onClearHistory={handleClearHistory}

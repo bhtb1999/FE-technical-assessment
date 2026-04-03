@@ -7,6 +7,7 @@ type PromptFormProps = {
   error: string;
   isLoading: boolean;
   canClearHistory: boolean;
+  placeholder?: string;
   onPromptChange: (value: string) => void;
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   onClearHistory: () => void;
@@ -17,6 +18,7 @@ export function PromptForm({
   error,
   isLoading,
   canClearHistory,
+  placeholder = "Ask Hugging Face to summarize, brainstorm, rewrite, or explain something.",
   onPromptChange,
   onSubmit,
   onClearHistory,
@@ -35,7 +37,7 @@ export function PromptForm({
       <label className="block space-y-2">
         <textarea
           className="min-h-28 w-full rounded-3xl border border-stone-300 bg-[#171717] px-5 py-4 text-base text-stone-50 outline-none transition placeholder:text-stone-400 focus:border-stone-500 focus:ring-4 focus:ring-stone-500"
-          placeholder="Ask Gemini to summarize, brainstorm, rewrite, or explain something."
+          placeholder={placeholder}
           value={prompt}
           onChange={(event) => onPromptChange(event.target.value)}
           onKeyDown={handleKeyDown}

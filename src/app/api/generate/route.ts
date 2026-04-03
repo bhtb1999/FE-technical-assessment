@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { streamGeminiContent } from "@/features/gemini/server/stream-generate-content";
+import { streamHuggingFaceContent } from "@/features/huggingface/server/stream-generate-content";
 import { ChatEntry } from "@/types/chat";
 
+export const runtime = "nodejs";
+
 export async function POST(request: NextRequest) {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.HF_TOKEN;
 
   if (!apiKey) {
     return NextResponse.json(
       {
-        error: "Missing GEMINI_API_KEY. Add it to your environment before sending prompts.",
+        error: "Missing HF_TOKEN. Add it to your environment before sending prompts.",
       },
       { status: 500 },
     );
@@ -26,7 +28,7 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
     }
-    const stream = await streamGeminiContent(prompt, history, apiKey);
+    const stream = await streamHuggingFaceContent(prompt, history, apiKey);
 
     return new NextResponse(stream, {
       headers: {
@@ -40,7 +42,7 @@ export async function POST(request: NextRequest) {
         error:
           error instanceof Error
             ? error.message
-            : "The request could not be completed. Check your network access and Gemini configuration.",
+            : "The request could not be completed. Check your Hugging Face configuration.",
       },
       { status: 500 },
     );

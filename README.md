@@ -1,11 +1,11 @@
-# Gemini Prompt Workspace
+# Hugging Face Prompt Workspace
 
-A lightweight Next.js app for a frontend engineering assessment. Users can enter a prompt, send it to Gemini, view the response, handle loading and error states, and review locally saved prompt history.
+A lightweight Next.js app for a frontend engineering assessment. Users can enter a prompt, send it to Hugging Face, view the response, handle loading and error states, and review locally saved prompt history.
 
 ## Features
 
 - Prompt input with submit action
-- Gemini integration through the OpenAI-compatible Chat Completions API
+- Hugging Face Inference Providers integration with streaming responses
 - Streaming response rendering
 - Loading and error states
 - Local chat history using `localStorage`
@@ -29,7 +29,8 @@ npm install
 2. Create a `.env.local` file in the project root:
 
 ```bash
-GEMINI_API_KEY=your_gemini_api_key_here
+HF_TOKEN=your_huggingface_token_here
+HF_MODEL=swiss-ai/Apertus-8B-Instruct-2509:publicai
 ```
 
 3. Start the development server:
@@ -56,14 +57,14 @@ src/app/api/generate/route.ts              API route for prompt submission
 src/features/chat/components/*             Chat UI components
 src/features/chat/hooks/use-chat-history.ts  Browser persistence hook
 src/features/chat/lib/*                    Client-side chat utilities
-src/features/gemini/server/*               Gemini server integration
+src/features/huggingface/server/*          Hugging Face server integration
 src/types/chat.ts                          Shared chat types
 src/app/globals.css                        Global styling and theme tokens
 ```
 
 ## Notes
 
-- The Gemini API key stays on the server because requests go through the Next.js route handler.
-- The server route calls Gemini using the OpenAI-compatible `chat/completions` API with `stream: true`.
+- The Hugging Face token stays on the server because requests go through the Next.js route handler.
+- The default route uses the official `@huggingface/inference` SDK with `chatCompletionStream(...)`.
 - Prompt history is stored in the browser, so it persists locally between refreshes.
 - In this environment, `npx next build --webpack` is the reliable production build command.
